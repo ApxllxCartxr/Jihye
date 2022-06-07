@@ -16,6 +16,16 @@ class ReactionRoles(commands.Cog):
         self.bot = bot
         self.connect_roles.start()
 
+    def is_guild_owner():
+        async def predicate(ctx):
+            return (
+                ctx.guild.owner_id == ctx.author.id
+                or ctx.author.guild_permissions.administrator
+                or ctx.author.guild_permissions.manage_roles
+            )
+
+        return commands.check(predicate)
+
     @tasks.loop(count=1)
     async def connect_roles(self):
         await self.bot.wait_until_ready()
@@ -24,10 +34,12 @@ class ReactionRoles(commands.Cog):
         log.info("ReactionRolesManager has been initialized.")
 
     @commands.group(name="rroles", aliases=["rr"], invoke_without_command=True)
+    @is_guild_owner()
     async def reaction_roles(self, ctx):
         return
 
     @reaction_roles.command()
+    @is_guild_owner()
     async def add(self, ctx, channel: disnake.TextChannel, msg):
         while True:
             message = await channel.fetch_message(int(msg))
@@ -66,6 +78,7 @@ class ReactionRoles(commands.Cog):
                 break
 
     @reaction_roles.command()
+    @is_guild_owner()
     async def remove(self, ctx, role: disnake.Role, msg_id: str):
         await self.ReactionRolesManager.remove_reaction(
             guild_id=ctx.guild.id,
@@ -75,6 +88,7 @@ class ReactionRoles(commands.Cog):
         await ctx.send_line(f"{role} was remove from ReactionRoles.")
 
     @reaction_roles.command()
+    @is_guild_owner()
     async def clear(self, ctx, channel: disnake.TextChannel, msg_id: str):
         await self.ReactionRolesManager.clear_reactions(
             guild_id=ctx.guild.id,
@@ -85,6 +99,7 @@ class ReactionRoles(commands.Cog):
         await message.clear_reactions()
 
     @reaction_roles.command()
+    @is_guild_owner()
     async def toggle(self, ctx, msg_id, value: bool = None):
         val = await self.ReactionRolesManager.rr_toggle(
             ctx.guild.id, value=value if value else None
