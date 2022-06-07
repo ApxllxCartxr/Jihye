@@ -1,9 +1,8 @@
 import os
-
-# import asyncio
-# import uvloop
 import disnake
 from dotenv import load_dotenv
+import asyncio
+import uvloop
 from bot import Bot
 
 load_dotenv()
@@ -12,17 +11,17 @@ Jihye = Bot(
     command_prefix="?",
     intents=disnake.Intents.all(),
     mongo_url=os.getenv("DBTOKEN"),
-    dbname="rewrite",
+    db_name="rewrite",
     reload=True,
-    #    intents=disnake.Intents.all,
+    test_guilds=[923592895162884118],
 )
 
 
-def main():
+async def main():
     bot = Jihye
-    bot.run(os.getenv("TOKEN"))
+    await bot.start(os.getenv("TOKEN"))
 
 
 if __name__ == "__main__":
-    # uvloop.install()
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
