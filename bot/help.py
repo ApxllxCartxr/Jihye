@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 
+
 class MyHelp(commands.HelpCommand):
     def __init__(self):
         super().__init__(
@@ -94,10 +95,7 @@ class MyHelp(commands.HelpCommand):
             title=f"{title} Category",
             description=f"{cog.description}\n\n"
             + "\n".join(
-                [
-                    f"<:arrowright:900419023345451009> `{x.name}` • {x.help}"
-                    for x in cog.get_commands()
-                ]
+                [f":arrow_right:  `{x.name}` • {x.help}" for x in cog.get_commands()]
             ),
             color=0x2F3136,
         )

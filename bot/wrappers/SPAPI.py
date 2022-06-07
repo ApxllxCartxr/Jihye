@@ -21,9 +21,9 @@ class SPAPIWrapper:
         self.BASE_URL = "https://apiv2.spapi.ga"
         self.session = aiohttp.ClientSession()
 
-    async def gsearch(self, q : str, *, image_search=False):
+    async def gsearch(self, q : str, image_search=False):
         if image_search:
-            endpoint = f"/fun/imagesearch?search={q}&num=4"
+            endpoint = f"/fun/imagesearch?search={q}&num=5"
             url = self.BASE_URL + endpoint
         else:
             endpoint = f'fun/gsearch?search={q}'

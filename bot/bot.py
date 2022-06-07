@@ -8,20 +8,23 @@ from typing import (
     List,
 )
 from bot.context import CustomContext
-from bot.exceptions import PrefixNotFound
+from bot.exceptions import PrefixNotFound, TaskExists
 from bot.cache import TimedCache
 from bot.help import MyHelp
+from bot.db import MongoManager, Document
 import logging
+import os
 
-FMT = "[{levelname: ^7}] {name} : {message}"
+FMT = "[{levelname: ^6}] {name} : {message}"
 
 FORMATS = {
-    logging.DEBUG : FMT,
-    logging.INFO  : f"\33[36m{FMT}\33[0m",
-    logging.WARNING : f"\33[33m{FMT}\33[0m",
-    logging.ERROR : f"\33[31m{FMT}\33[0m",
-    logging.CRITICAL : f"\33[1m\33[31m{FMT}\33[0m"
+    logging.DEBUG: FMT,
+    logging.INFO: f"\33[36m{FMT}\33[0m",
+    logging.WARNING: f"\33[33m{FMT}\33[0m",
+    logging.ERROR: f"\33[31m{FMT}\33[0m",
+    logging.CRITICAL: f"\33[1m\33[31m{FMT}\33[0m",
 }
+
 
 class customformatter(logging.Formatter):
     def format(self, record):
@@ -29,29 +32,28 @@ class customformatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt, style="{")
         return formatter.format(record)
 
+
 handler = logging.StreamHandler()
 handler.setFormatter(customformatter())
-logging.basicConfig(
-    level = logging.INFO,
-    handlers = [handler]
-    )
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 
 gateway_logger = logging.getLogger("disnake.gateway")
 gateway_logger.setLevel(logging.WARNING)
 client_logger = logging.getLogger("disnake.client")
 client_logger.setLevel(logging.WARNING)
+log = logging.getLogger(__name__)
 
 
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         self._uptime = datetime.datetime.now()
-        self.prefix_cache : TimedCache = TimedCache()
-        self.DEFAULT_PREFIX : str = kwargs.pop("command_prefix")
+        self.prefix_cache: TimedCache = TimedCache()
+        self.DEFAULT_PREFIX: str = kwargs.pop("command_prefix")
+        self.mongo_url, self.db_name = kwargs.pop("mongo_url"), kwargs.pop("db_name")
         kwargs["command_prefix"] = self.get_command_prefix
-        kwargs['help_command'] = MyHelp()
-        self.logger = logging.getLogger(__name__)
+        kwargs["help_command"] = MyHelp()
         super().__init__(*args, **kwargs)
-
+        self.db: MongoManager = MongoManager(self.mongo_url, self.db_name)
 
     @property
     def uptime(self) -> datetime.datetime:
@@ -64,8 +66,12 @@ class Bot(commands.Bot):
         return await super().get_context(message, cls=cls)
 
     async def on_ready(self):
-        self.logger.info("\n\33[33m»»———-　starting bot　———-««\33[0m \n")
+        log.info("\n\33[33m»»———-　starting bot　———-««\33[0m \n")
         self.load_extension("jishaku")
+        for filename in os.listdir("bot/cogs"):
+            if filename.endswith(".py"):
+                self.load_extension(f"bot.cogs.{filename[:-3]}")
+                log.info(f"❜ ─ {filename[:-3]} was loaded . ─ ❛")
 
     async def on_message(self, msg):
         if msg.author.id == self.user.id:
@@ -117,16 +123,12 @@ class Bot(commands.Bot):
         if guild_id in self.prefix_cache:
             return self.prefix_cache.get_entry(guild_id)
 
-        prefix_data = None
-
-        if not prefix_data:
-            raise PrefixNotFound
-
-        prefix: Optional[str] = prefix_data.get("prefix")
+        prefix = await self.SettingsManager.fetch_prefix(guild_id)
 
         if not prefix:
             raise PrefixNotFound
-        self.prefix_cache.add_entry(guild_id, prefix,ttl = timedelta(hours=1), override=True)
+        if prefix != self.DEFAULT_PREFIX:
+            self.prefix_cache.add_entry(
+                guild_id, prefix, ttl=timedelta(hours=1), override=True
+            )
         return prefix
-
-
