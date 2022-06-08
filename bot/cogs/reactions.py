@@ -47,7 +47,7 @@ class ReactionRoles(commands.Cog):
             emoji = await ctx.get_input("Type the emoji you want to use")
 
             role = await ctx.get_input(
-                f"Type the name of the role you want to bind to emoji"
+                f"Type the name of the role you want to bind to {emoji}"
             )
 
             if role.isdigit():
