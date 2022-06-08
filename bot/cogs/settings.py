@@ -20,7 +20,7 @@ class Settings(commands.Cog):
         async def predicate(ctx):
             return (
                 ctx.guild.owner_id == ctx.author.id
-                and ctx.author.guild_permissions.administrator
+                or ctx.author.guild_permissions.administrator
             )
 
         return commands.check(predicate)
@@ -55,7 +55,9 @@ class Settings(commands.Cog):
         self.bot.prefix_cache.add_entry(
             ctx.guild.id, prefix, ttl=timedelta(hours=1), override=True
         )
-        await ctx.send_line(f"prefix was changed from {OGprefix} - - > {prefix}")
+        await ctx.send_line(
+            f"prefix was changed from ***{OGprefix}*** - - > ***{prefix}***"
+        )
 
 
 def setup(bot):
