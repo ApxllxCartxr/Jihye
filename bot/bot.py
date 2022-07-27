@@ -1,105 +1,109 @@
-import disnake
-from disnake.ext import commands
+import os
 import datetime
 from datetime import timedelta
 import humanize
-from typing import (
-    Optional,
-    List,
-)
+from typing import List, Optional
+
+import disnake
+from disnake.ext import commands
+
+from bot.exceptions import PrefixNotFound
 from bot.context import CustomContext
-from bot.exceptions import PrefixNotFound, TaskExists
-from bot.cache import TimedCache
 from bot.help import MyHelp
-from bot.db import MongoManager, Document
-import logging
-import os
-
-FMT = "[{levelname: ^6}] {name} : {message}"
-
-FORMATS = {
-    logging.DEBUG: FMT,
-    logging.INFO: f"\33[36m{FMT}\33[0m",
-    logging.WARNING: f"\33[33m{FMT}\33[0m",
-    logging.ERROR: f"\33[31m{FMT}\33[0m",
-    logging.CRITICAL: f"\33[1m\33[31m{FMT}\33[0m",
-}
+from bot.db import MongoManager
+from bot.db.managers import SettingsManager
+from bot.cache import TimedCache
 
 
-class customformatter(logging.Formatter):
-    def format(self, record):
-        log_fmt = FORMATS[record.levelno]
-        formatter = logging.Formatter(log_fmt, style="{")
-        return formatter.format(record)
-
-
-handler = logging.StreamHandler()
-handler.setFormatter(customformatter())
-logging.basicConfig(level=logging.INFO, handlers=[handler])
-
-gateway_logger = logging.getLogger("disnake.gateway")
-gateway_logger.setLevel(logging.WARNING)
-client_logger = logging.getLogger("disnake.client")
-client_logger.setLevel(logging.WARNING)
-log = logging.getLogger(__name__)
-
-
-class Bot(commands.Bot):
+class BaseBot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
-        self._uptime = datetime.datetime.now()
-        self.prefix_cache: TimedCache = TimedCache()
+
+        self.__uptime = datetime.datetime.now()
+
         self.DEFAULT_PREFIX: str = kwargs.pop("command_prefix")
-        self.mongo_url, self.db_name = kwargs.pop("mongo_url"), kwargs.pop("db_name")
+        self.prefix_cache: TimedCache = TimedCache()
         kwargs["command_prefix"] = self.get_command_prefix
+
+        self.db: MongoManager = MongoManager(
+            kwargs.pop("mongo_url"), kwargs.pop("db_name", None)
+        )
         kwargs["help_command"] = MyHelp()
+
         super().__init__(*args, **kwargs)
-        self.db: MongoManager = MongoManager(self.mongo_url, self.db_name)
 
     @property
     def uptime(self) -> datetime.datetime:
-        return self._uptime
+        return self.__uptime
 
-    def get_bot_uptime(self) -> str:
+    def get_uptime(self) -> str:
         return humanize.precisedelta(self.uptime - datetime.datetime.now())
 
-    async def get_context(self, message, *, cls=CustomContext):
-        return await super().get_context(message, cls=cls)
+    async def get_context(self, msg, *, cls=CustomContext) -> CustomContext:
+        return await super().get_context(msg, cls=cls)
 
-    async def on_ready(self):
-        log.info("\n\33[33m»»———-　starting bot　———-««\33[0m \n")
+    async def on_ready(self) -> None:
         self.load_extension("jishaku")
+
         for filename in os.listdir("bot/cogs"):
             if filename.endswith(".py"):
                 self.load_extension(f"bot.cogs.{filename[:-3]}")
-                log.info(f"❜ ─ {filename[:-3]} was loaded . ─ ❛")
+                print(f"❜ ─ {filename[:-3]} was loaded . ─ ❛")
 
-    async def on_message(self, msg):
+    async def on_message(self, msg: disnake.Message) -> None:
         if msg.author.id == self.user.id:
             return
         await self.process_commands(msg)
 
-    async def get_command_prefix(self, bot, message: disnake.Message) -> List[str]:
+    async def get_command_prefix(self, bot, msg: disnake.Message) -> List[str]:
+        """
+        Returns a list of prefixes for a guild
+
+        Parameters
+        ----------
+        bot : commands.Bot/BaseBot
+            The bot instance
+
+        msg : disnake.Message
+            The msg object
+
+        Returns
+        -------
+        List[str]
+            A list of prefixes
+            i.e bot_mention, "?" etc.
+        """
+
         try:
-            prefix = await self.get_guild_prefix(guild_id=message.guild.id)
-
-            prefix = self.get_case_insensitive_prefix(message.content, prefix)
-
-            return commands.when_mentioned_or(prefix)(self, message)
+            prefix = await self.get_guild_prefix(guild_id=msg.guild.id)
+            prefix = self.get_case_insensitive_prefix(msg.content, prefix)
 
         except (AttributeError, PrefixNotFound):
-            prefix = self.get_case_insensitive_prefix(
-                message.content, self.DEFAULT_PREFIX
-            )
-            return commands.when_mentioned_or(prefix)(self, message)
+            prefix = self.get_case_insensitive_prefix(msg.content, self.DEFAULT_PREFIX)
+
+        return commands.when_mentioned_or(prefix)(self, msg)
 
     @staticmethod
-    def get_case_insensitive_prefix(content, prefix):
+    def get_case_insensitive_prefix(content, prefix) -> str:
+        """
+        Returns a case insensitive prefix....obviously,
+
+        Parameters
+        ----------
+        content : str
+            The content of the msg
+
+        prefix : str
+            The prefix returned from self.get_guild_prefix
+
+        Returns
+        -------
+            str
+                The prefix
+
+        """
         if content.casefold().startswith(prefix.casefold()):
-            # The prefix matches, now return the one the user used
-            # such that dpy will dispatch the given command
             prefix_length = len(prefix)
             prefix = content[:prefix_length]
-
         return prefix
 
     async def get_guild_prefix(self, guild_id: Optional[int] = None) -> str:
@@ -120,6 +124,7 @@ class Bot(commands.Bot):
             We failed to find and
             return a valid prefix
         """
+
         if guild_id in self.prefix_cache:
             return self.prefix_cache.get_entry(guild_id)
 
@@ -127,8 +132,9 @@ class Bot(commands.Bot):
 
         if not prefix:
             raise PrefixNotFound
+
         if prefix != self.DEFAULT_PREFIX:
             self.prefix_cache.add_entry(
-                guild_id, prefix, ttl=timedelta(hours=1), override=True
+                guild_id, prefix, ttl=timedelta(minutes=30), override=True
             )
         return prefix

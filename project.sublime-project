@@ -1,0 +1,33 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+
+		}
+	],
+	"settings":
+    {
+        "LSP":
+        {
+            "LSP-pylsp":
+            {
+                "settings":
+                {
+                    "python_interpreter": "home/joey/code/Jihye/venv/bin/python3",
+                    "swallow_startup_errors" : true
+                },
+            },
+        },
+     },
+            
+    "build_systems":
+    [
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"./venv/bin/python3\" -u \"$file\"",
+		}
+	],
+}

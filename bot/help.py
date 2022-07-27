@@ -94,9 +94,7 @@ class MyHelp(commands.HelpCommand):
         em = disnake.Embed(
             title=f"{title} Category",
             description=f"{cog.description}\n\n"
-            + "\n".join(
-                [f":arrow_right:  `{x.name}` • {x.help}" for x in cog.get_commands()]
-            ),
+            + "\n".join([f" `{x.name}` • {x.help}" for x in cog.get_commands()]),
             color=0x2F3136,
         )
         em.set_footer(text="Use help [command] for more info")
