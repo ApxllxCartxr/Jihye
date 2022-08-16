@@ -31,3 +31,23 @@ class TaskDoesNotExist(DiscordException):
 
 class InvalidSetting(DiscordException):
     """Setting does not exist"""
+
+
+class ARDoesNotExist(DiscordException):
+    """Setting does not exist"""
+
+
+class TriggerExists(DiscordException):
+    """Trigger already exists"""
+
+
+class TriggerDoesNotExist(DiscordException):
+    """Trigger does not exist"""
+
+
+class EmbedDoesNotExist(DiscordException):
+    """THe embed does not exitst"""
+
+
+class EmbedExists(DiscordException):
+    """The embed already exists"""

@@ -1,20 +1,18 @@
-from disnake.ext import commands, tasks
-from bot.exceptions import TaskExists, TaskDoesNotExist
-from bot.db import ToDoListManager, SettingsManager
-import logging
 import disnake
-from pprint import pprint
+from disnake.ext import commands, tasks
 from datetime import timedelta
 
-log = logging.getLogger(__name__)
+from bot.db.managers import SettingsManager
 
 
 class Settings(commands.Cog):
-    """Contains the cmds related to bot settings."""
+    """
+    Contains all the cmds related to guild settings.
+    """
 
     def __init__(self, bot):
         self.bot = bot
-        self.connect_settings.start()
+        self.cache_settings.start()
 
     def is_guild_owner():
         async def predicate(ctx):
@@ -26,14 +24,19 @@ class Settings(commands.Cog):
         return commands.check(predicate)
 
     @tasks.loop(count=1)
-    async def connect_settings(self):
+    async def cache_settings(self) -> None:
+        """
+        Caching settings,what else is there to say?
+        """
         await self.bot.wait_until_ready()
         self.bot.SettingsManager = SettingsManager(self.bot.db)
         await self.bot.SettingsManager.initialize()
-        log.info("SettingsManager has been initialized.")
 
     @commands.group(aliases=["config", "settings"], invoke_without_command=True)
     async def set(self, ctx):
+        """
+        Display the current settings for your guild
+        """
         prefix = await self.bot.SettingsManager.fetch_prefix(ctx.guild.id)
         embed = disnake.Embed(
             description=f"Use `{prefix}set`  to change settings!\n **__prefix__** : {prefix}"
@@ -43,18 +46,26 @@ class Settings(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @set.command(aliases=["p"])
+    @set.command(aliases=["p", "pre"])
     @is_guild_owner()
     async def prefix(self, ctx, prefix: str):
+        """
+        Use to change the guild prefix
+        """
         if len(prefix) > 2:
-            await ctx.send_line("The given prefix is too long try something smaller")
+            await ctx.send_line("The given prefix is too long,try something smaller")
             return
+
         OGprefix = await self.bot.SettingsManager.fetch_prefix(ctx.guild.id)
+
         await self.bot.SettingsManager.set(ctx.guild.id, "prefix", prefix)
+
         self.bot.prefix_cache.delete_entry(ctx.guild.id)
+
         self.bot.prefix_cache.add_entry(
             ctx.guild.id, prefix, ttl=timedelta(hours=1), override=True
         )
+
         await ctx.send_line(
             f"prefix was changed from ***{OGprefix}*** - - > ***{prefix}***"
         )

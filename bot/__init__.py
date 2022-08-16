@@ -1,7 +1,4 @@
 from .context import CustomContext
-from .bot import Bot
+from .bot import BaseBot
 from .exceptions import *
 from .help import MyHelp
-from bot.cogs import *
-
-

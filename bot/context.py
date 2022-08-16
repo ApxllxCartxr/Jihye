@@ -39,7 +39,7 @@ class CustomContext(Context):
                 f"**{self.author}**, you didnt react with a ✅ or :negative_squared_cross_mark: in 60 seconds."
             )
             if delete_after:
-                await sent.delete()
+                await msg.delete()
         else:
             if str(reaction.emoji) in "✅":
                 val = True

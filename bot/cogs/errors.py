@@ -31,6 +31,9 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.DisabledCommand):
             await ctx.send(f"{ctx.command} has been disabled.")
 
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send_line("You're missing an argument.")
+
         elif isinstance(error, ReactionExists):
             await ctx.send_line(f"The reaction for that role already exists")
 

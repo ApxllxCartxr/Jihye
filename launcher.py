@@ -3,11 +3,11 @@ import disnake
 from dotenv import load_dotenv
 import asyncio
 import uvloop
-from bot import Bot
+from bot import BaseBot
 
 load_dotenv()
 
-Jihye = Bot(
+Jihye = BaseBot(
     command_prefix="?",
     intents=disnake.Intents.all(),
     mongo_url=os.getenv("DBTOKEN"),
