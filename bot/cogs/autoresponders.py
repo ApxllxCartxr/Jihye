@@ -127,8 +127,9 @@ class Autoresponders(commands.Cog):
             field_name = await ctx.get_input(
                 "Would you like to add a field? If yes, type the name of the field.\nElse type 'no' without the cb"
             )
-            if field_name.lower() == "no":
+            if field_name.lower().startswith("no"):
                 break
+                
             field_desc = await ctx.get_input("What should the desc of the field be?")
             inline = await ctx.get_input("Should it be inline?")
             embed.add_field(
@@ -139,25 +140,25 @@ class Autoresponders(commands.Cog):
         thumb = await ctx.get_input(
             "What should the thumbnail be? Type `no` if you don't want one."
         )
-        if thumb.lower() != "no":
+        if not thumb.lower().startswith("no"):
             embed.set_thumbnail(url=thumb)
 
         img = await ctx.get_input(
-            "What should the thumbnail be? Type `no` if you don't want one."
+            "What should the image be? Type `no` if you don't want one."
         )
-        if img.lower() != "no":
+        if not img.lower().startswith("no"):
             embed.set_image(url=img)
         footer = await ctx.get_input(
             "What should the footer be? Type `no` if you don't want one. "
         )
         if not footer.lower().startswith("no"):
-            embed.set_footer(footer)
-
+            embed.set_footer(text=footer)
+        await ctx.send(embed=embed)
         val = embed.to_dict()
         await self.ARManager.add_ar(
             guild_id=ctx.guild.id, user_id=ctx.author.id, trigger=name, response=val
         )
-        await ctx.send(embed=embed)
+        
 
     @ar.command(aliases=["-"])
     @can_manage_msgs()
