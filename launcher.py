@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import asyncio
 from bot import BaseBot
 from dontuserepl import lazy_setup
+import nest_asyncio
+nest_asyncio.apply()
 
 
 load_dotenv()
@@ -21,7 +23,7 @@ Jihye = BaseBot(
 
 async def main():
     bot = Jihye
-    #lazy_setup(key) 
+    lazy_setup(key) 
     await bot.start(os.getenv("TOKEN"))
 
 
