@@ -104,21 +104,21 @@ class fun(commands.Cog):
                 draw = ImageDraw.Draw(im=im)
 
                 draw.text(
-                    xy=(280, 110),
+                    xy=(280, 90),
                     text=f"{album}",
                     font=thin,
                     fill=color,
                     anchor="ls",
                 )
                 draw.text(
-                    xy=(280, 170),
+                    xy=(280, 155),
                     text=f"{song}",
                     font=regular,
                     fill=color,
                     anchor="ls",
                 )
                 draw.text(
-                    xy=(280, 210),
+                    xy=(280, 205),
                     text=f"by {artists}",
                     font=thin,
                     fill=color,
