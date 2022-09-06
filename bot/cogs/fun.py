@@ -61,8 +61,8 @@ class fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def spoti(self, ctx, user: disnake.Member = None):
+    @commands.command(aliases=["np", "spoti"])
+    async def spotify(self, ctx, user: disnake.Member = None):
         user = user or ctx.author
         for activity in user.activities:
             if isinstance(activity, disnake.Spotify):
@@ -155,6 +155,9 @@ class fun(commands.Cog):
                     image_binary.seek(0)
                     await ctx.send(file=disnake.File(fp=image_binary,
                                                      filename="image.png"))
+                    return
+
+        await ctx.send_line(f"{user.mention} isn't listening to anything atm")
 
 
 def setup(bot):
