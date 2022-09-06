@@ -9,7 +9,7 @@ nest_asyncio.apply()
 
 
 load_dotenv()
-key = os.getenv('uptimerobot_api_key') 
+key = os.getenv('UPTIME_TOKEN') 
 
 Jihye = BaseBot(
     command_prefix="?",
