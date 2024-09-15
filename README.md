@@ -3,10 +3,10 @@ Personal bot for my server!
 Default prefix is ?.
 
 ### Spotify Cards
-<img src="imgs/spotify1.png">
+
 <img src="imgs/spotify2.png">
 <img src="imgs/spotify3.png">
-<img src="imgs/spotify4.png">
+
 (now with progress bars!!)
 
 ### Autoresponders
