@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   jihye:
     build:
@@ -8,12 +8,5 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/app:delegated
-    ports:
-      - "8080:8080"
+      - ./:/app
     restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"

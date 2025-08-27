@@ -92,7 +92,7 @@ class Autoresponders(commands.Cog):
 
     @ar.group(aliases=["+"], invoke_without_command=True)
     @can_manage_msgs()
-    @commands.cooldown(1, 30, commands.BucketType.guild)
+    #@commands.cooldown(1, 30, commands.BucketType.guild)
     async def add(self, ctx, *, name: str):
         """
         Add an AR to your guild.
