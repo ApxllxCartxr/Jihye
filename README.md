@@ -1,14 +1,72 @@
 # Jihye
-A discord bot made for a server with over 1k+ members.
-Default prefix is ?.(Can be changed with the respective command)
-## Features
-### Autoresponders
- Responds to any phrases or words said by the user with a preset response also set by the user.
-### Reaction Roles
- Can assign roles to users based on their reactions to a message.
-### To do list
- Make your own to do list.
 
-# Setting it up for yourself
- Make a .env file and add your mongodb and discord bot tokens to it and run launcher.py that's it!
- (that is most definitely not the case but I will fix it, soon.)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Framework: disnake](https://img.shields.io/badge/Framework-disnake-7289DA.svg)](https://github.com/DisnakeDev/disnake)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+A modern, minimal Discord bot built with disnake — focused on reliability and ease-of-use for large servers (1k+ members).
+
+✨ Quick highlights
+
+- 🧠 **Autoresponders** — create custom text or embed responses to triggers.
+- 🎭 **Reaction Roles** — assign roles when users react to messages.
+- ✅ **To‑Do Lists** — per-user to-do list commands.
+- 🎧 **Now Playing (Spotify)** — beautiful generated images for Spotify activity.
+- ⚙️ **Custom Prefixes** — change the bot prefix per guild.
+- 📚 **Interactive Help** — embedded, permission-aware help output.
+- 🗄️ **MongoDB-backed** — persistent storage for all features.
+
+---
+
+## 🚀 Quick start
+
+Requirements
+
+- Python 3.8+
+- MongoDB
+- Discord bot token
+
+Install & run
+
+```bash
+git clone https://github.com/ApxllxCartxr/Jihye.git
+cd Jihye
+pip install -r requirements.txt
+```
+
+Create a `.env` file in the project root with:
+
+```env
+DISCORD_TOKEN=your_bot_token_here
+MONGO_URL=your_mongodb_connection_string
+DB_NAME=your_database_name
+```
+
+Run the bot:
+
+```bash
+python launcher.py
+```
+
+---
+
+## 📖 Usage (quick)
+
+- Default prefix: `?` (can be customized per server)
+- `?help` — show command list and details
+- `?ar add` / `?ar remove` — manage autoresponders
+- `?todo` — manage personal to-do lists
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome. Please open a PR or an issue on the repository.
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file.
+
+---
+
+Made with ❤️ — built for communities.
