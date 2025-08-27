@@ -23,9 +23,9 @@ DEALINGS IN THE SOFTWARE.
 """
 from typing import Dict, List, Optional, Union
 
-import disnake
+import discord
 
-from disnake.ext.commands import Context
+from discord.ext.commands import Context
 
 __all__ = (
     "PaginatorButton",
@@ -36,7 +36,7 @@ __all__ = (
 )
 
 
-class PaginatorButton(disnake.ui.Button):
+class PaginatorButton(discord.ui.Button):
     """Creates a button used to navigate the paginator.
 
     Parameters
@@ -47,7 +47,7 @@ class PaginatorButton(disnake.ui.Button):
     label: :class:`str`
         The label shown on the button.
         Defaults to a capitalized version of ``button_type`` (e.g. "Next", "Prev", etc.)
-    emoji: Union[:class:`str`, :class:`disnake.Emoji`, :class:`disnake.PartialEmoji`]
+    emoji: Union[:class:`str`, :class:`discord.Emoji`, :class:`discord.PartialEmoji`]
         The emoji shown on the button in front of the label.
     disabled: :class:`bool`
         Whether to initially show the button as disabled.
@@ -65,8 +65,8 @@ class PaginatorButton(disnake.ui.Button):
         self,
         button_type: str,
         label: str = None,
-        emoji: Union[str, disnake.Emoji, disnake.PartialEmoji] = None,
-        style: disnake.ButtonStyle = disnake.ButtonStyle.green,
+        emoji: Union[str, discord.Emoji, discord.PartialEmoji] = None,
+        style: discord.ButtonStyle = discord.ButtonStyle.green,
         disabled: bool = False,
         custom_id: str = None,
         row: int = 0,
@@ -82,20 +82,20 @@ class PaginatorButton(disnake.ui.Button):
         )
         self.button_type = button_type
         self.label = label if label or emoji else button_type.capitalize()
-        self.emoji: Union[str, disnake.Emoji, disnake.PartialEmoji] = emoji
+        self.emoji: Union[str, discord.Emoji, discord.PartialEmoji] = emoji
         self.style = style
         self.disabled = disabled
         self.loop_label = self.label if not loop_label else loop_label
         self.paginator = None
 
-    async def callback(self, interaction: disnake.Interaction):
+    async def callback(self, interaction: discord.Interaction):
         """|coro|
 
         The coroutine that is called when the navigation button is clicked.
 
         Parameters
         -----------
-        interaction: :class:`disnake.Interaction`
+        interaction: :class:`discord.Interaction`
             The interaction created by clicking the navigation button.
         """
         if self.button_type == "first":
@@ -123,48 +123,48 @@ class Page:
     Parameters
     ----------
     content: :class:`str`
-        The content of the page. Corresponds to the :class:`disnake.Message.content` attribute.
-    embeds: Optional[List[Union[List[:class:`disnake.Embed`], :class:`disnake.Embed`]]]
-        The embeds of the page. Corresponds to the :class:`disnake.Message.embeds` attribute.
-    files: Optional[List[:class:`disnake.File`]]
+        The content of the page. Corresponds to the :class:`discord.Message.content` attribute.
+    embeds: Optional[List[Union[List[:class:`discord.Embed`], :class:`discord.Embed`]]]
+        The embeds of the page. Corresponds to the :class:`discord.Message.embeds` attribute.
+    files: Optional[List[:class:`discord.File`]]
         A list of local files to be shown with the page.
-    custom_view: Optional[:class:`disnake.ui.View`]
+    custom_view: Optional[:class:`discord.ui.View`]
         The custom view shown when the page is visible. Overrides the `custom_view` attribute of the main paginator.
     """
 
     def __init__(
         self,
         content: Optional[str] = None,
-        embeds: Optional[List[Union[List[disnake.Embed], disnake.Embed]]] = None,
-        custom_view: Optional[disnake.ui.View] = None,
-        files: Optional[List[disnake.File]] = None,
+        embeds: Optional[List[Union[List[discord.Embed], discord.Embed]]] = None,
+        custom_view: Optional[discord.ui.View] = None,
+        files: Optional[List[discord.File]] = None,
         **kwargs,
     ):
         if content is None and embeds is None:
-            raise disnake.InvalidArgument("A page cannot have both content and embeds equal to None.")
+            raise ValueError("A page cannot have both content and embeds equal to None.")
         self._content = content
         self._embeds = embeds or []
         self._custom_view = custom_view
         self._files = files or []
 
-    async def callback(self, interaction: Optional[disnake.Interaction] = None):
+    async def callback(self, interaction: Optional[discord.Interaction] = None):
         """|coro|
 
         The coroutine associated to a specific page. If `Paginator.page_action()` is used, this coroutine is called.
 
         Parameters
         ----------
-        interaction: Optional[:class:`disnake.Interaction`]
+        interaction: Optional[:class:`discord.Interaction`]
             The interaction associated with the callback, if any.
         """
         pass
 
-    def update_files(self) -> Optional[List[disnake.File]]:
+    def update_files(self) -> Optional[List[discord.File]]:
         """Updates the files associated with the page by re-uploading them.
         Typically used when the page is changed."""
         for file in self._files:
             with open(file.fp.name, "rb") as fp:  # type: ignore
-                self._files[self._files.index(file)] = disnake.File(
+                self._files[self._files.index(file)] = discord.File(
                     fp,  # type: ignore
                     filename=file.filename,
                     description=file.description,
@@ -183,32 +183,32 @@ class Page:
         self._content = value
 
     @property
-    def embeds(self) -> Optional[List[Union[List[disnake.Embed], disnake.Embed]]]:
+    def embeds(self) -> Optional[List[Union[List[discord.Embed], discord.Embed]]]:
         """Gets the embeds for the page."""
         return self._embeds
 
     @embeds.setter
-    def embeds(self, value: Optional[List[Union[List[disnake.Embed], disnake.Embed]]]):
+    def embeds(self, value: Optional[List[Union[List[discord.Embed], discord.Embed]]]):
         """Sets the embeds for the page."""
         self._embeds = value
 
     @property
-    def custom_view(self) -> Optional[disnake.ui.View]:
+    def custom_view(self) -> Optional[discord.ui.View]:
         """Gets the custom view assigned to the page."""
         return self._custom_view
 
     @custom_view.setter
-    def custom_view(self, value: Optional[disnake.ui.View]):
+    def custom_view(self, value: Optional[discord.ui.View]):
         """Assigns a custom view to be shown when the page is displayed."""
         self._custom_view = value
 
     @property
-    def files(self) -> Optional[List[disnake.File]]:
+    def files(self) -> Optional[List[discord.File]]:
         """Gets the files associated with the page."""
         return self._files
 
     @files.setter
-    def files(self, value: Optional[List[disnake.File]]):
+    def files(self, value: Optional[List[discord.File]]):
         """Sets the files associated with the page."""
         self._files = value
 
@@ -225,14 +225,14 @@ class PageGroup:
 
     Parameters
     ----------
-    pages: Union[List[:class:`str`], List[:class:`Page`], List[Union[List[:class:`disnake.Embed`], :class:`disnake.Embed`]]]
+    pages: Union[List[:class:`str`], List[:class:`Page`], List[Union[List[:class:`discord.Embed`], :class:`discord.Embed`]]]
         The list of :class:`Page` objects, strings, embeds, or list of embeds to include in the page group.
     label: :class:`str`
         The label shown on the corresponding PaginatorMenu dropdown option.
         Also used as the SelectOption value.
     description: Optional[:class:`str`]
         The description shown on the corresponding PaginatorMenu dropdown option.
-    emoji: Union[:class:`str`, :class:`disnake.Emoji`, :class:`disnake.PartialEmoji`]
+    emoji: Union[:class:`str`, :class:`discord.Emoji`, :class:`discord.PartialEmoji`]
         The emoji shown on the corresponding PaginatorMenu dropdown option.
     default: Optional[:class:`bool`]
         Whether the page group should be the default page group initially shown when the paginator response is sent.
@@ -251,7 +251,7 @@ class PageGroup:
         The row where the default paginator buttons are displayed. Has no effect if custom buttons are used.
     loop_pages: :class:`bool`
         Whether to loop the pages when clicking prev/next while at the first/last page in the list.
-    custom_view: Optional[:class:`disnake.ui.View`]
+    custom_view: Optional[:class:`discord.ui.View`]
         A custom view whose items are appended below the pagination buttons.
     timeout: Optional[:class:`float`]
         Timeout in seconds from last interaction with the paginator before no longer accepting input.
@@ -265,10 +265,10 @@ class PageGroup:
 
     def __init__(
         self,
-        pages: Union[List[str], List[Page], List[Union[List[disnake.Embed], disnake.Embed]]],
+        pages: Union[List[str], List[Page], List[Union[List[discord.Embed], discord.Embed]]],
         label: str,
         description: Optional[str] = None,
-        emoji: Union[str, disnake.Emoji, disnake.PartialEmoji] = None,
+        emoji: Union[str, discord.Emoji, discord.PartialEmoji] = None,
         default: Optional[bool] = None,
         show_disabled: Optional[bool] = None,
         show_indicator: Optional[bool] = None,
@@ -277,14 +277,14 @@ class PageGroup:
         use_default_buttons: Optional[bool] = None,
         default_button_row: int = 0,
         loop_pages: Optional[bool] = None,
-        custom_view: Optional[disnake.ui.View] = None,
+    custom_view: Optional[discord.ui.View] = None,
         timeout: Optional[float] = None,
         custom_buttons: Optional[List[PaginatorButton]] = None,
         trigger_on_display: Optional[bool] = None,
     ):
         self.label = label
         self.description: Optional[str] = description
-        self.emoji: Union[str, disnake.Emoji, disnake.PartialEmoji] = emoji
+        self.emoji: Union[str, discord.Emoji, discord.PartialEmoji] = emoji
         self.pages: Union[List[str], List[Union[List[disnake.Embed], disnake.Embed]]] = pages
         self.default: Optional[bool] = default
         self.show_disabled = show_disabled
@@ -300,12 +300,12 @@ class PageGroup:
         self.trigger_on_display = trigger_on_display
 
 
-class Paginator(disnake.ui.View):
+class Paginator(discord.ui.View):
     """Creates a paginator which can be sent as a message and uses buttons for navigation.
 
     Parameters
     ----------
-    pages: Union[List[:class:`PageGroup`], List[:class:`Page`], List[:class:`str`], List[Union[List[:class:`disnake.Embed`], :class:`disnake.Embed`]]]
+    pages: Union[List[:class:`PageGroup`], List[:class:`Page`], List[:class:`str`], List[Union[List[:class:`discord.Embed`], :class:`discord.Embed`]]]
         The list of :class:`PageGroup` objects, :class:`Page` objects, strings, embeds, or list of embeds to paginate.
         If a list of :class:`PageGroup` objects is provided and `show_menu` is ``False``, only the first page group will be displayed.
     show_disabled: :class:`bool`
@@ -327,7 +327,7 @@ class Paginator(disnake.ui.View):
         The row where the default paginator buttons are displayed. Has no effect if custom buttons are used.
     loop_pages: :class:`bool`
         Whether to loop the pages when clicking prev/next while at the first/last page in the list.
-    custom_view: Optional[:class:`disnake.ui.View`]
+    custom_view: Optional[:class:`discord.ui.View`]
         A custom view whose items are appended below the pagination components.
         If the currently displayed page has a `custom_view` assigned, it will replace these view components when that page is displayed.
     timeout: Optional[:class:`float`]
@@ -379,7 +379,7 @@ class Paginator(disnake.ui.View):
         super().__init__(timeout=timeout)
         self.timeout: float = timeout
         self.pages: Union[
-            List[PageGroup], List[str], List[Page], List[Union[List[disnake.Embed], disnake.Embed]]
+            List[PageGroup], List[str], List[Page], List[Union[List[discord.Embed], discord.Embed]]
         ] = pages
         self.current_page = 0
         self.menu: Optional[PaginatorMenu] = None
@@ -407,9 +407,9 @@ class Paginator(disnake.ui.View):
         self.use_default_buttons = use_default_buttons
         self.default_button_row = default_button_row
         self.loop_pages = loop_pages
-        self.custom_view: disnake.ui.View = custom_view
-        self.trigger_on_display = trigger_on_display
-        self.message: Union[disnake.Message, disnake.WebhookMessage, None] = None
+    self.custom_view: discord.ui.View = custom_view
+    self.trigger_on_display = trigger_on_display
+    self.message: Union[discord.Message, discord.WebhookMessage, None] = None
 
         if self.custom_buttons and not self.use_default_buttons:
             for button in custom_buttons:
@@ -441,7 +441,7 @@ class Paginator(disnake.ui.View):
         timeout: Optional[float] = None,
         custom_buttons: Optional[List[PaginatorButton]] = None,
         trigger_on_display: Optional[bool] = None,
-        interaction: Optional[disnake.Interaction] = None,
+        interaction: Optional[discord.Interaction] = None,
     ):
         """Updates the existing :class:`Paginator` instance with the provided options.
 
@@ -478,13 +478,13 @@ class Paginator(disnake.ui.View):
         trigger_on_display: :class:`bool`
             Whether to automatically trigger the callback associated with a `Page` whenever it is displayed.
             Has no effect if no callback exists for a `Page`.
-        interaction: Optional[:class:`disnake.Interaction`]
+        interaction: Optional[:class:`discord.Interaction`]
             The interaction to use when updating the paginator. If not provided, the paginator will be updated
             by using its stored :attr:`message` attribute instead.
         """
 
         # Update pages and reset current_page to 0 (default)
-        self.pages: Union[List[PageGroup], List[str], List[Page], List[Union[List[disnake.Embed], disnake.Embed]]] = (
+    self.pages: Union[List[PageGroup], List[str], List[Page], List[Union[List[discord.Embed], discord.Embed]]] = (
             pages if pages is not None else self.pages
         )
         self.show_menu = show_menu if show_menu is not None else self.show_menu
@@ -498,7 +498,6 @@ class Paginator(disnake.ui.View):
                     break
             self.pages: List[Page] = self.get_page_group_content(self.page_groups[self.default_page_group])
         self.page_count = max(len(self.pages) - 1, 0)
-        self.current_page = 0
         # Apply config changes, if specified
         self.show_disabled = show_disabled if show_disabled is not None else self.show_disabled
         self.show_indicator = show_indicator if show_indicator is not None else self.show_indicator
@@ -508,7 +507,7 @@ class Paginator(disnake.ui.View):
         self.use_default_buttons = use_default_buttons if use_default_buttons is not None else self.use_default_buttons
         self.default_button_row = default_button_row if default_button_row is not None else self.default_button_row
         self.loop_pages = loop_pages if loop_pages is not None else self.loop_pages
-        self.custom_view: disnake.ui.View = None if custom_view is None else custom_view
+    self.custom_view: discord.ui.View = None if custom_view is None else custom_view
         self.timeout: float = timeout if timeout is not None else self.timeout
         self.trigger_on_display = trigger_on_display if trigger_on_display is not None else self.trigger_on_display
         if custom_buttons and not self.use_default_buttons:
@@ -590,7 +589,7 @@ class Paginator(disnake.ui.View):
         else:
             await self.message.edit(view=self)
 
-    async def goto_page(self, page_number: int = 0, *, interaction: Optional[disnake.Interaction] = None) -> None:
+    async def goto_page(self, page_number: int = 0, *, interaction: Optional[discord.Interaction] = None) -> None:
         """Updates the paginator message to show the specified page number.
 
         Parameters
@@ -602,7 +601,7 @@ class Paginator(disnake.ui.View):
 
                 Page numbers are zero-indexed when referenced internally, but appear as one-indexed when shown to the user.
 
-        interaction: Optional[:class:`disnake.Interaction`]
+        interaction: Optional[:class:`discord.Interaction`]
             The interaction to use when editing the message. If not provided, the message will be edited using the paginator's
             stored :attr:`message` attribute instead.
 
@@ -645,7 +644,7 @@ class Paginator(disnake.ui.View):
         if self.trigger_on_display:
             await self.page_action(interaction=interaction)
 
-    async def interaction_check(self, interaction: disnake.Interaction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.usercheck:
             return self.user == interaction.user
         return True
@@ -663,33 +662,33 @@ class Paginator(disnake.ui.View):
             PaginatorButton(
                 "first",
                 label="<<",
-                style=disnake.ButtonStyle.blurple,
+                style=discord.ButtonStyle.blurple,
                 row=self.default_button_row,
             ),
             PaginatorButton(
                 "prev",
                 label="<",
-                style=disnake.ButtonStyle.red,
+                style=discord.ButtonStyle.red,
                 loop_label="↪",
                 row=self.default_button_row,
             ),
             PaginatorButton(
                 "page_indicator",
-                style=disnake.ButtonStyle.gray,
+                style=discord.ButtonStyle.gray,
                 disabled=True,
                 row=self.default_button_row,
             ),
             PaginatorButton(
                 "next",
                 label=">",
-                style=disnake.ButtonStyle.green,
+                style=discord.ButtonStyle.green,
                 loop_label="↩",
                 row=self.default_button_row,
             ),
             PaginatorButton(
                 "last",
                 label=">>",
-                style=disnake.ButtonStyle.blurple,
+                style=discord.ButtonStyle.blurple,
                 row=self.default_button_row,
             ),
         ]
@@ -699,7 +698,7 @@ class Paginator(disnake.ui.View):
     def add_button(self, button: PaginatorButton):
         """Adds a :class:`PaginatorButton` to the paginator."""
         self.buttons[button.button_type] = {
-            "object": disnake.ui.Button(
+            "object": discord.ui.Button(
                 style=button.style,
                 label=button.label
                 if button.label or button.emoji
@@ -823,12 +822,12 @@ class Paginator(disnake.ui.View):
                 "Page content must be a Page object, string, an embed, a list of embeds, a file, or a list of files."
             )
 
-    async def page_action(self, interaction: Optional[disnake.Interaction] = None) -> None:
+    async def page_action(self, interaction: Optional[discord.Interaction] = None) -> None:
         """Triggers the callback associated with the current page, if any.
 
         Parameters
         ----------
-        interaction: Optional[:class:`disnake.Interaction`]
+        interaction: Optional[:class:`discord.Interaction`]
             The interaction that was used to trigger the page action.
         """
         if self.get_page_content(self.pages[self.current_page]).callback:
@@ -1028,14 +1027,14 @@ class PaginatorMenu(disnake.ui.Select):
         ]
         super().__init__(placeholder=placeholder, max_values=1, min_values=1, options=opts, custom_id=custom_id)
 
-    async def callback(self, interaction: disnake.Interaction):
+    async def callback(self, interaction: discord.Interaction):
         """|coro|
 
         The coroutine that is called when a menu option is selected.
 
         Parameters
         -----------
-        interaction: :class:`disnake.Interaction`
+        interaction: :class:`discord.Interaction`
             The interaction created by selecting the menu option.
         """
         selection = self.values[0]

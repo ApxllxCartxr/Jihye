@@ -1,0 +1,24 @@
+FROM python:3.8-slim
+
+WORKDIR /app
+
+# Install system deps needed for some Python packages
+RUN apt-get update \
+    && apt-get install -y gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install (includes dev watcher)
+COPY requirements.txt .
+# Install watchdog for auto-restart in dev
+RUN pip install --no-cache-dir -r requirements.txt watchdog
+
+# We will mount source in dev; don't copy app here.
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash app \
+    && chown -R app:app /app
+USER app
+
+ENV PYTHONUNBUFFERED=1
+
+# Use watchmedo to auto-restart the process when files change
+CMD ["watchmedo", "auto-restart", "--recursive", "--pattern=*.py", "--", "python", "launcher.py"]

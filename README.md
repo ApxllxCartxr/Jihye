@@ -34,6 +34,21 @@ cd Jihye
 pip install -r requirements.txt
 ```
 
+### Using Docker
+
+Build and run with Docker:
+
+```bash
+docker build -t jihye-bot .
+docker run -e DISCORD_TOKEN=your_token -e MONGO_URL=your_mongo -e DB_NAME=your_db jihye-bot
+```
+
+Or use Docker Compose (includes MongoDB):
+
+```bash
+docker-compose up --build
+```
+
 Create a `.env` file in the project root with:
 
 ```env

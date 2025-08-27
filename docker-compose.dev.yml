@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  jihye:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: jihye-bot:dev
+    env_file:
+      - .env
+    volumes:
+      - ./:/app:delegated
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

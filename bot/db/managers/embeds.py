@@ -2,8 +2,8 @@ from copy import deepcopy
 from functools import wraps
 from typing import Optional, Union, List
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 from bot.exceptions import EmbedExists, EmbedDoesNotExist
 from bot.db import MongoManager
@@ -132,4 +132,3 @@ class EmbedManager:
             "created_by" : user_id,
             "embed" : embed_data.
         }
-        

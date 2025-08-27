@@ -1,85 +1,43 @@
-aiohttp @ https://files.pythonhosted.org/packages/a6/76/f18138b0ff84fcd939667a2efc2e1b49c871299f9091f84c06bb4c350c01/aiohttp-3.7.4.post0-cp38-cp38-manylinux2014_x86_64.whl#sha256=79ebfc238612123a713a457d92afb4096e2148be17df6c50fb9bf7a81c2f8013
-aiolimiter @ https://files.pythonhosted.org/packages/41/33/20821ea0d009f38a285407b52c0186ed6489f8f5166bcf4a01d467425b28/aiolimiter-1.0.0b1-py3-none-any.whl#sha256=2e1866b5d5ba65bbb809521aed3f0bfaa6def9ad8d3d392b8eaadc823918b2ee
-astunparse @ https://files.pythonhosted.org/packages/2b/03/13dde6512ad7b4557eb792fbcf0c653af6076b81e5941d36ec61f7ce6028/astunparse-1.6.3-py2.py3-none-any.whl#sha256=c2652417f2c8b5bb325c885ae329bdf3f86424075c4fd1a128674bc6fba4b8e8
-async-timeout @ https://files.pythonhosted.org/packages/e1/1e/5a4441be21b0726c4464f3f23c8b19628372f606755a9d2e46c187e65ec4/async_timeout-3.0.1-py3-none-any.whl#sha256=4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3
-attr @ https://files.pythonhosted.org/packages/68/eb/e96c25f5accb24b151c5a559961f29af2ef089725b547efb185985c73e10/attr-0.3.2-py2.py3-none-any.whl#sha256=4f4bffeea8c27387bde446675a7ac24f3b8fea1075f12d849b5f5c5181fc8336
-attrs @ https://files.pythonhosted.org/packages/f2/bc/d817287d1aa01878af07c19505fafd1165cd6a119e9d0821ca1d1c20312d/attrs-22.1.0-py2.py3-none-any.whl#sha256=86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c
-braceexpand @ https://files.pythonhosted.org/packages/fa/93/e8c04e80e82391a6e51f218ca49720f64236bc824e92152a2633b74cf7ab/braceexpand-0.1.7-py2.py3-none-any.whl#sha256=91332d53de7828103dcae5773fb43bc34950b0c8160e35e0f44c4427a3b85014
-CacheControl==0.12.11
-cachy==0.3.0
+aiohttp==3.7.4.post0
+aiolimiter==1.0.0b1
+async-timeout==3.0.1
+attrs==22.1.0
 certifi==2022.6.15
 cffi==1.15.1
-chardet @ https://files.pythonhosted.org/packages/19/c7/fa589626997dd07bd87d9269342ccb74b1720384a4d739a1872bd84fbe68/chardet-4.0.0-py2.py3-none-any.whl#sha256=f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5
-charset-normalizer @ https://files.pythonhosted.org/packages/db/51/a507c856293ab05cdc1db77ff4bc1268ddd39f29e7dc4919aa497f0adbec/charset_normalizer-2.1.1-py3-none-any.whl#sha256=83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f
-cleo==0.8.1
-click @ https://files.pythonhosted.org/packages/c2/f1/df59e28c642d583f7dacffb1e0965d0e00b218e0186d7858ac5233dce840/click-8.1.3-py3-none-any.whl#sha256=bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48
-clikit==0.6.2
-crashtest==0.3.1
+chardet==4.0.0
+charset-normalizer==2.1.1
+click==8.1.3
 cryptography==37.0.4
-debugpy @ https://files.pythonhosted.org/packages/d2/e3/d0531ee73216d553d717bf4ac51dff297f89054619fa69db61eef028a07f/debugpy-1.6.3-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl#sha256=daadab4403427abd090eccb38d8901afd8b393e01fd243048fab3f1d7132abb4
-disnake @ https://files.pythonhosted.org/packages/4f/0a/4ba2580db44d6e1b61db8e1a16e2a3729059796a369618a87cf8da86323a/disnake-2.5.2-py3-none-any.whl#sha256=e36faa97afce4c8caacee1c68ba08903611bbb8dd455bd95e32867a1c6b0352a
-disnake-jishaku==2.6.5
-distlib==0.3.5
+debugpy==1.6.3
+discord.py==2.4.0
 dnspython==2.2.1
-dontuserepl @ https://files.pythonhosted.org/packages/84/ac/5a7efe08ca1a5f932cfc4959e6dfb5577b0a6cda9f3c36c07f8e65cd9107/dontuserepl-0.1.5-py3-none-any.whl#sha256=717b324d6f991a557da3429d12a2e6e9306f6ce38196abd6fea9aed923838c94
-easy-pil @ https://files.pythonhosted.org/packages/e3/af/390ce76a9f8b27f4ad6bf91da3de367f00f92ea16e5f06880ece6a0d5e12/easy_pil-0.1.9-py3-none-any.whl#sha256=1912b02e309c826a730a1437b29688ee850c848123e3a2016fc0e9af39513d88
-fast-colorthief @ https://files.pythonhosted.org/packages/38/b4/acfff5048d62b4b608633ec5dd0d03103512d517921aad97a1cbbc629971/fast_colorthief-0.0.4-cp38-cp38-manylinux2010_x86_64.whl#sha256=85d52cbb5f4ddc934592d83eb17ba7e4d42c57859b0771a7e1d2db4bbdd11f3e
-filelock==3.7.1
-Flask @ https://files.pythonhosted.org/packages/0f/43/15f4f9ab225b0b25352412e8daa3d0e3d135fcf5e127070c74c3632c8b4c/Flask-2.2.2-py3-none-any.whl#sha256=b9c46cc36662a7949f34b52d8ec7bb59c0d74ba08ba6cb9ce9adc1d8676d9526
-html5lib==1.1
-humanize @ https://files.pythonhosted.org/packages/b6/92/7caf90478ead425a31e6c765a13c5525c527ff2dad57997b2863220996ce/humanize-4.3.0-py3-none-any.whl#sha256=5dd159c9910cd57b94072e4d7decae097f0eb84c4645153706929a7f127cb2ef
+dontuserepl==0.1.5
+easy-pil==0.1.9
+fast-colorthief==0.0.4
+humanize==4.3.0
 idna==3.3
-import-expression @ https://files.pythonhosted.org/packages/de/f5/f152ddc7dde1729759bb31d2b6759102766302b1f16d013386725d37c2b2/import_expression-1.1.4-py3-none-any.whl#sha256=292099910a4dcc65ba562377cd2265487ba573dd63d73bdee5deec36ca49555b
 importlib-metadata==4.12.0
-itsdangerous @ https://files.pythonhosted.org/packages/68/5f/447e04e828f47465eeab35b5d408b7ebaaaee207f48b7136c5a7267a30ae/itsdangerous-2.1.2-py3-none-any.whl#sha256=2c2349112351b88699d8d4b6b075022c0808887cb7ad10069318a8b0bc88db44
-jedi @ https://files.pythonhosted.org/packages/b3/0e/836f12ec50075161e365131f13f5758451645af75c2becf61c6351ecec39/jedi-0.18.1-py2.py3-none-any.whl#sha256=637c9635fcf47945ceb91cd7f320234a7be540ded6f3e99a50cb6febdfd1ba8d
-jeepney==0.8.0
-Jinja2 @ https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl#sha256=6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61
-keyring==23.7.0
-lockfile==0.12.2
-MarkupSafe @ https://files.pythonhosted.org/packages/fd/f4/524d2e8f5a3727cf309c2b7df7c732038375322df1376c9e9ef3aa92fcaf/MarkupSafe-2.1.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=4b9fe39a2ccc108a4accc2676e77da025ce383c108593d65cc909add5c3bd601
-motor @ https://files.pythonhosted.org/packages/84/00/3865aec63ed89170d879a13928cdeb5e452f50e23fcc82955bed446053aa/motor-3.0.0-py3-none-any.whl#sha256=b076de44970f518177f0eeeda8b183f52eafa557775bfe3294e93bda18867a71
-msgpack==1.0.4
-multidict @ https://files.pythonhosted.org/packages/8f/39/a7e04961b4c00d68aba337e3fdef9fd4f666dcd98f41725067a1de5d3399/multidict-6.0.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=684133b1e1fe91eda8fa7447f137c9490a064c6b7f392aa857bba83a28cfb693
-nest-asyncio @ https://files.pythonhosted.org/packages/be/1e/a83058de46b40a392bdefcaac44d1d42db4bf8562cb68c95d6bae4b93276/nest_asyncio-1.5.5-py3-none-any.whl#sha256=b98e3ec1b246135e4642eceffa5a6c23a3ab12c82ff816a92c612d68205813b2
-numpy @ https://files.pythonhosted.org/packages/2c/5b/ba2f6d662dfc0c8c9927c05faf2e722a7a7f417ad4665800f819174b818f/numpy-1.23.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=bd5b7ccae24e3d8501ee5563e82febc1771e73bd268eef82a1e8d2b4d556ae66
-packaging @ https://files.pythonhosted.org/packages/05/8e/8de486cbd03baba4deef4142bd643a3e7bbe954a784dc1bb17142572d127/packaging-21.3-py3-none-any.whl#sha256=ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522
-parso @ https://files.pythonhosted.org/packages/05/63/8011bd08a4111858f79d2b09aad86638490d62fbf881c44e434a6dfca87b/parso-0.8.3-py2.py3-none-any.whl#sha256=c001d4636cd3aecdaf33cbb40aebb59b094be2a74c556778ef5576c175e19e75
-pastel==0.2.1
-pexpect==4.8.0
-Pillow @ https://files.pythonhosted.org/packages/fe/f9/cd8b11ec15e27581c5e7affdf04d618d44fa9524dbeb429e5e728df6dc4c/Pillow-8.4.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=a5a4532a12314149d8b4e4ad8ff09dde7427731fcfa5917ff16d0291f13609df
-pkginfo==1.8.3
-platformdirs==2.5.2
-pluggy @ https://files.pythonhosted.org/packages/9e/01/f38e2ff29715251cf25532b9082a1589ab7e4f571ced434f98d0139336dc/pluggy-1.0.0-py2.py3-none-any.whl#sha256=74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3
-poetry==1.1.14
-poetry-core==1.0.8
-ptyprocess==0.7.0
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe==2.1.1
+jishaku==2.5.1
+motor==3.0.0
+multidict==6.0.2
+nest-asyncio==1.5.5
+numpy==1.23.2
+packaging==21.3
+Pillow==8.4.0
 pycparser==2.21
-pyflakes @ https://files.pythonhosted.org/packages/43/fb/38848eb494af7df9aeb2d7673ace8b213313eb7e391691a79dbaeb6a838f/pyflakes-2.4.0-py2.py3-none-any.whl#sha256=3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
-pylev==1.4.0
-pymongo @ https://files.pythonhosted.org/packages/4e/bb/7583c54689a5c7eac7ee02583ccab639a7171e81b01121bd85679a301383/pymongo-4.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=83cc3c35aeeceb67143914db67f685206e1aa37ea837d872f4bc28d7f80917c9
-pyparsing==3.0.9
-python-dotenv @ https://files.pythonhosted.org/packages/2d/10/ff4f2f5b2a420fd09e1331d63cc87cf4367c5745c0a4ce99cea92b1cbacb/python_dotenv-0.21.0-py3-none-any.whl#sha256=1684eb44636dd462b66c3ee016599815514527ad99965de77f43e0944634a7e5
-python-lsp-jsonrpc @ https://files.pythonhosted.org/packages/06/ee/754bfd5f6bfe7162c10d3ecb0aeef6f882f91d3231596c83f761a75efd0b/python_lsp_jsonrpc-1.0.0-py3-none-any.whl#sha256=079b143be64b0a378bdb21dff5e28a8c1393fe7e8a654ef068322d754e545fc7
-python-lsp-server @ https://files.pythonhosted.org/packages/b1/5a/ad7c922b5e0018b0e832d7616023751ecf35a6eaa2919ff996e95ade6e7b/python_lsp_server-1.5.0-py3-none-any.whl#sha256=77aac9861b0e23cafb251f116448157e6c45957e625097ed4846891281cffc18
-pytoolconfig @ https://files.pythonhosted.org/packages/26/15/e21a7c063c29c0b782be090df589b25fdc62ea3b5e5687a94a217851944e/pytoolconfig-1.2.2-py3-none-any.whl#sha256=825d97b052e58b609c2684b04efeb543075588d33a4916a6dc2ae39676458c7d
-replit @ https://files.pythonhosted.org/packages/bc/c7/6937037f3152a26917c80eadd4729a63175afe89241e43451d8588bdb130/replit-3.2.4-py3-none-any.whl#sha256=4fa5895e1e090ba23c179641bc88ab0486d1bea696515aa3147fce55733e29e1
+pydantic==1.10.2
+PyJWT==2.4.0
+pymongo==4.3.3
+PyNaCl==1.5.0
+python-dateutil==2.8.2
+python-dotenv==0.20.0
+PyYAML==6.0
 requests==2.28.1
-requests-toolbelt==0.9.1
-rope @ https://files.pythonhosted.org/packages/08/81/205ef66c8a129a7b87cbdadf59f2dbc2bbad24c6073d9e393fb0e2aa7d78/rope-1.3.0-py3-none-any.whl#sha256=f0c82bd7167c2926339c6f0d9ecf7c93d6866cbe380c78639fa1bc4ac037c097
-SecretStorage==3.3.2
-shellingham==1.4.0
 six==1.16.0
-toml @ https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl#sha256=806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b
-tomli @ https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl#sha256=939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc
-tomlkit==0.11.1
-typing-extensions @ https://files.pythonhosted.org/packages/ed/d6/2afc375a8d55b8be879d6b4986d4f69f01115e795e36827fd3a40166028b/typing_extensions-4.3.0-py3-none-any.whl#sha256=25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02
-ujson @ https://files.pythonhosted.org/packages/5f/f1/b9aadba666b7b3eddae7ca4ab960b225e1a9715801f69201eeb38f01e223/ujson-5.4.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=0551c1ba0bc9e05b69d9c18266dbc93252b5fa3cd9940051bc88a0dd33607b19
-urllib3 @ https://files.pythonhosted.org/packages/6f/de/5be2e3eed8426f871b170663333a0f627fc2924cc386cd41be065e7ea870/urllib3-1.26.12-py2.py3-none-any.whl#sha256=b930dd878d5a8afb066a637fbb35144fe7901e3b209d1cd4f524bd0e9deee997
-virtualenv==20.16.2
-webencodings==0.5.1
-Werkzeug @ https://files.pythonhosted.org/packages/c8/27/be6ddbcf60115305205de79c29004a0c6bc53cec814f733467b1bb89386d/Werkzeug-2.2.2-py3-none-any.whl#sha256=f979ab81f58d7318e064e99c4506445d60135ac5cd2e177a2de0089bfd4c9bd5
-whatthepatch @ https://files.pythonhosted.org/packages/fe/31/bf06fa31436e8118447bed0a428a1279d1164ebdc2d8866666033ab03ca8/whatthepatch-1.0.2-py2.py3-none-any.whl#sha256=6d920d6c328eda006f12ec05bc9eadb405957b18460520db195f9a21eb3336e1
-yapf @ https://files.pythonhosted.org/packages/47/88/843c2e68f18a5879b4fbf37cb99fbabe1ffc4343b2e63191c8462235c008/yapf-0.32.0-py2.py3-none-any.whl#sha256=8fea849025584e486fd06d6ba2bed717f396080fd3cc236ba10cb97c4c51cf32
-yarl @ https://files.pythonhosted.org/packages/dd/cf/5e7d506b9b5add77548252d6938380e08caf59ba808ac3cf0f0635629d1a/yarl-1.8.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=ea513a25976d21733bff523e0ca836ef1679630ef4ad22d46987d04b372d57fc
-zipp==3.8.1
+typing-extensions==4.3.0
+urllib3==1.26.12
+Werkzeug==2.2.2
+yarl==1.8.1

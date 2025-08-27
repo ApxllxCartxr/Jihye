@@ -1,11 +1,11 @@
-from typing import Union
+from typing import Union, Optional
 from pprint import pprint
 
-import disnake
-from disnake.ext import commands, tasks
+import discord
+from discord.ext import commands, tasks
 
 from bot.exceptions import TriggerDoesNotExist, TriggerExists
-from bot.paginators import PycordPaginator
+from bot.paginators import SimplePaginator
 from bot.db.managers import ARManager
 
 
@@ -17,17 +17,22 @@ class Autoresponders(commands.Cog):
         self.cache_triggers.start()
 
     def can_manage_msgs():
-        async def predicate(ctx):
+        def predicate(ctx):
             return (
-                ctx.guild.owner_id == ctx.author.id
-                or ctx.author.guild_permissions.administrator
-                or ctx.author.guild_permissions.manage_messages
+                ctx.guild and (
+                    ctx.guild.owner_id == ctx.author.id
+                    or ctx.author.guild_permissions.administrator
+                    or ctx.author.guild_permissions.manage_messages
+                )
             )
 
         return commands.check(predicate)
 
     def cog_unload(self):
-        self.bot.remove_listener(self.ARManager.on_msg, "on_message")
+        try:
+            self.bot.remove_listener(self.ARManager.on_msg, "on_message")
+        except Exception:
+            pass
 
     @tasks.loop(count=1)
     async def cache_triggers(self):
@@ -58,7 +63,7 @@ class Autoresponders(commands.Cog):
         name="ar", aliases=["trigger", "autores"], invoke_without_command=True
     )
     @can_manage_msgs()
-    async def ar(self, ctx, *, ar: Union[str, int] = None):
+    async def ar(self, ctx, *, ar: Optional[Union[str, int]] = None):
         """
         Gives the list of ARs for the guild
         """
@@ -67,11 +72,11 @@ class Autoresponders(commands.Cog):
                 data = await self.ARManager.format_guild_ars(ctx.guild.id)
                 embeds = []
                 for page in data:
-                    embed = disnake.Embed(
+                    embed = discord.Embed(
                         title=f"{ctx.guild.name}'s ARs", description=page
                     )
                     embeds.append(embed)
-                paginator = PycordPaginator(pages=embeds, loop_pages=True)
+                paginator = SimplePaginator(pages=embeds)
                 await paginator.send(ctx)
             except TriggerDoesNotExist:
                 await ctx.send_line("This server has no ARs.")
@@ -87,12 +92,30 @@ class Autoresponders(commands.Cog):
 
     @ar.group(aliases=["+"], invoke_without_command=True)
     @can_manage_msgs()
+    @commands.cooldown(1, 30, commands.BucketType.guild)
     async def add(self, ctx, *, name: str):
         """
         Add an AR to your guild.
         """
+        # Input validation
+        if not name or len(name.strip()) == 0:
+            await ctx.send_line("Trigger cannot be empty.")
+            return
+        if len(name) > 100:
+            await ctx.send_line("Trigger is too long (max 100 characters).")
+            return
+        # Basic sanitization: remove potential injection chars, but allow common ones
+        name = name.strip()
 
         val = await ctx.get_input("What should the response of the AR be?")
+        if not val or len(val.strip()) == 0:
+            await ctx.send_line("Response cannot be empty.")
+            return
+        if len(val) > 2000:  # Discord message limit
+            await ctx.send_line("Response is too long (max 2000 characters).")
+            return
+        val = val.strip()
+
         try:
             await self.ARManager.add_ar(
                 guild_id=ctx.guild.id, user_id=ctx.author.id, trigger=name, response=val
@@ -105,16 +128,33 @@ class Autoresponders(commands.Cog):
 
     @add.command(aliases=["em"])
     @can_manage_msgs()
+    @commands.cooldown(1, 30, commands.BucketType.guild)
     async def embed(self, ctx, *, name: str):
         """
         Add an embed AR in your guild
         """
-        title = await ctx.get_input("What should the title of the embed be?")
+        # Input validation for trigger
+        if not name or len(name.strip()) == 0:
+            await ctx.send_line("Trigger cannot be empty.")
+            return
+        if len(name) > 100:
+            await ctx.send_line("Trigger is too long (max 100 characters).")
+            return
+        name = name.strip()
 
-        embed = disnake.Embed(title=title)
+        title = await ctx.get_input("What should the title of the embed be?")
+        if len(title) > 256:  # Discord embed title limit
+            await ctx.send_line("Title is too long (max 256 characters).")
+            return
+
+        embed = discord.Embed(title=title)
 
         desc = await ctx.get_input("What should be the desc. of the embed be?")
+        if len(desc) > 4096:  # Discord embed desc limit
+            await ctx.send_line("Description is too long (max 4096 characters).")
+            return
         embed.description = desc
+
         color = await ctx.get_input(
             "What should the color of the embed be?(only accepts #fffff like values)"
         )
@@ -129,8 +169,13 @@ class Autoresponders(commands.Cog):
             )
             if field_name.lower().startswith("no"):
                 break
-                
-            field_desc = await ctx.get_input("What should the desc of the field be?")
+            if len(field_name) > 256:
+                await ctx.send_line("Field name too long.")
+                continue
+            field_desc = await ctx.get_input("What should be the desc of the field be?")
+            if len(field_desc) > 1024:
+                await ctx.send_line("Field value too long.")
+                continue
             inline = await ctx.get_input("Should it be inline?")
             embed.add_field(
                 name=field_name,
@@ -153,12 +198,19 @@ class Autoresponders(commands.Cog):
         )
         if not footer.lower().startswith("no"):
             embed.set_footer(text=footer)
-        await ctx.send(embed=embed)
         val = embed.to_dict()
         await self.ARManager.add_ar(
             guild_id=ctx.guild.id, user_id=ctx.author.id, trigger=name, response=val
         )
         
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send_line(f"You're on cooldown. Try again in {error.retry_after:.1f} seconds.")
+        else:
+            # Re-raise for other handlers
+            raise error
 
     @ar.command(aliases=["-"])
     @can_manage_msgs()
@@ -173,5 +225,5 @@ class Autoresponders(commands.Cog):
             await ctx.send_line("The AR does not exist.")
 
 
-def setup(bot):
-    bot.add_cog(Autoresponders(bot))
+async def setup(bot):
+    await bot.add_cog(Autoresponders(bot))

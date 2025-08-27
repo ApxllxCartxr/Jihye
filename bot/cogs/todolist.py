@@ -1,4 +1,4 @@
-from disnake.ext import commands, tasks
+from discord.ext import commands, tasks
 from bot.exceptions import TaskExists, TaskDoesNotExist
 from bot.db.managers import ToDoListManager
 import logging
@@ -83,5 +83,5 @@ class ToDoList(commands.Cog):
         await ctx.send_line(f"<t:{self.bot.uptime.timestamp():.0f}:R>")
 
 
-def setup(bot):
-    bot.add_cog(ToDoList(bot))
+async def setup(bot):
+    await bot.add_cog(ToDoList(bot))

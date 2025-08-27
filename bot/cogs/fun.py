@@ -6,8 +6,8 @@ from urllib.request import urlopen
 import textwrap
 import fast_colorthief
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 
 def strfdelta(tdelta, fmt):
@@ -47,7 +47,6 @@ async def c2(bg, colors):
         b1g = b1 / 3294 if b1 <= 10 else (b1 / 269 + 0.0513)**2.4
 
         l2 = 0.2126 * r1g + 0.7152 * g1g + 0.0722 * b1g
-
         c = (l1 + 0.05) / (l2 + 0.05) if l1 > l2 else (l2 + 0.05) / (l1 + 0.05)
         contrasts.append(c)
 
@@ -62,10 +61,10 @@ class fun(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["np", "spoti"])
-    async def spotify(self, ctx, user: disnake.Member = None):
+    async def spotify(self, ctx, user: discord.Member = None):
         user = user or ctx.author
         for activity in user.activities:
-            if isinstance(activity, disnake.Spotify):
+            if isinstance(activity, discord.Spotify):
                 basewidth = 220
                 img = Image.open(urlopen(activity.album_cover_url))
                 wpercent = basewidth / float(img.size[0])
@@ -153,12 +152,12 @@ class fun(commands.Cog):
                 with BytesIO() as image_binary:
                     new_image.save(image_binary, "PNG")
                     image_binary.seek(0)
-                    await ctx.send(file=disnake.File(fp=image_binary,
+                    await ctx.send(file=discord.File(fp=image_binary,
                                                      filename="image.png"))
                     return
 
         await ctx.send_line(f"{user.mention} isn't listening to anything atm")
 
 
-def setup(bot):
-    bot.add_cog(fun(bot))
+async def setup(bot):
+    await bot.add_cog(fun(bot))

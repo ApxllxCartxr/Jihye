@@ -1,4 +1,4 @@
-from disnake import DiscordException
+from discord import DiscordException
 
 
 class ExistingEntry(DiscordException):

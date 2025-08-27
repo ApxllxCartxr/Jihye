@@ -1,21 +1,19 @@
 import os
-import disnake
+import discord
 from dotenv import load_dotenv
 import asyncio
 from bot import BaseBot
-from dontuserepl import lazy_setup
 import nest_asyncio
 nest_asyncio.apply()
 
 
 load_dotenv()
-key = os.getenv('UPTIME_TOKEN') 
 
 Jihye = BaseBot(
     command_prefix="?",
-    intents=disnake.Intents.all(),
-    mongo_url=os.getenv("DBTOKEN"),
-    db_name="rewrite",
+    intents=discord.Intents.all(),
+    mongo_url=os.getenv("MONGO_URL"),
+    db_name=os.getenv("DB_NAME", "rewrite"),
     reload=True,
     test_guilds=[923592895162884118],
 )
@@ -23,8 +21,7 @@ Jihye = BaseBot(
 
 async def main():
     bot = Jihye
-    lazy_setup(key) 
-    await bot.start(os.getenv("TOKEN"))
+    await bot.start(os.getenv("DISCORD_TOKEN"))
 
 
 if __name__ == "__main__":

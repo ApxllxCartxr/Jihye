@@ -4,8 +4,8 @@ from datetime import timedelta
 import humanize
 from typing import List, Optional
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 from bot.exceptions import PrefixNotFound
 from bot.context import CustomContext
@@ -42,19 +42,19 @@ class BaseBot(commands.Bot):
         return await super().get_context(msg, cls=cls)
 
     async def on_ready(self) -> None:
-        self.load_extension("jishaku")
+        await self.load_extension("jishaku")
 
         for filename in os.listdir("bot/cogs"):
             if filename.endswith(".py"):
-                self.load_extension(f"bot.cogs.{filename[:-3]}")
+                await self.load_extension(f"bot.cogs.{filename[:-3]}")
                 print(f"❜ ─ {filename[:-3]} was loaded . ─ ❛")
 
-    async def on_message(self, msg: disnake.Message) -> None:
+    async def on_message(self, msg: discord.Message) -> None:
         if msg.author.id == self.user.id:
             return
         await self.process_commands(msg)
 
-    async def get_command_prefix(self, bot, msg: disnake.Message) -> List[str]:
+    async def get_command_prefix(self, bot, msg: discord.Message) -> List[str]:
         """
         Returns a list of prefixes for a guild
 
@@ -63,7 +63,7 @@ class BaseBot(commands.Bot):
         bot : commands.Bot/BaseBot
             The bot instance
 
-        msg : disnake.Message
+        msg : discord.Message
             The msg object
 
         Returns

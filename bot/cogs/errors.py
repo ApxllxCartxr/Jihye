@@ -1,7 +1,7 @@
-import disnake
+import discord
 import traceback
 import sys
-from disnake.ext import commands
+from discord.ext import commands
 from bot.exceptions import ReactionExists, ReactionDoesNotExists
 
 
@@ -45,9 +45,8 @@ class CommandErrorHandler(commands.Cog):
                 await ctx.author.send(
                     f"{ctx.command} can not be used in Private Messages."
                 )
-            except disnake.HTTPException:
+            except discord.HTTPException:
                 pass
-
         else:
             # All other Errors not returned come here. And we can just print the default TraceBack.
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
@@ -55,5 +54,5 @@ class CommandErrorHandler(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(CommandErrorHandler(bot))
+async def setup(bot):
+    await bot.add_cog(CommandErrorHandler(bot))

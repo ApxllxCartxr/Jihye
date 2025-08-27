@@ -1,14 +1,15 @@
 import asyncio
-import disnake
-from disnake.ext.commands import Context
+import discord
+from discord.ext.commands import Context
+from typing import Optional
 
 
 class CustomContext(Context):
     async def send_line(self, desc, title=None, time: bool = False):
-        embed = disnake.Embed(
+        embed = discord.Embed(
             description=desc,
             color=0x2F3136,
-            timestamp=self.message.created_at if time else disnake.Embed.Empty,
+            timestamp=self.message.created_at if time else None,
         )
         if title:
             embed.set_author(name=title)
@@ -40,11 +41,14 @@ class CustomContext(Context):
             )
             if delete_after:
                 await msg.delete()
+            val = None
         else:
             if str(reaction.emoji) in "✅":
                 val = True
-            if str(reaction.emoji) in "❎":
+            elif str(reaction.emoji) in "❎":
                 val = False
+            else:
+                val = None
         try:
             if delete_after:
                 await msg.delete()
@@ -54,7 +58,7 @@ class CustomContext(Context):
     async def get_input(
         self,
         desc: str,
-        title: str = None,
+        title: Optional[str] = None,
         timeout: int = 60,
         delete_after: bool = False,
         _id=None,
@@ -65,7 +69,7 @@ class CustomContext(Context):
         try:
             _id = _id or self.author.id or self.id
         except:
-            self.send_line("Something went wrong try again. . ")
+            await self.send_line("Something went wrong try again. . ")
 
         try:
             msg = await self.bot.wait_for(
@@ -78,6 +82,7 @@ class CustomContext(Context):
             if delete_after:
                 await sent.delete()
             await self.send_line("You took too long </3")
+            val = None
 
         else:
             val = msg.content
@@ -106,7 +111,7 @@ class CustomContext(Context):
     ):
         """Wraps a string to send formatted as an embed"""
 
-        embed = disnake.Embed(description=desc)
+        embed = discord.Embed(description=desc)
 
         if color:
             embed.colour = color

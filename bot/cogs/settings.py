@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands, tasks
+import discord
+from discord.ext import commands, tasks
 from datetime import timedelta
 
 from bot.db.managers import SettingsManager
@@ -38,7 +38,7 @@ class Settings(commands.Cog):
         Display the current settings for your guild
         """
         prefix = await self.bot.SettingsManager.fetch_prefix(ctx.guild.id)
-        embed = disnake.Embed(
+        embed = discord.Embed(
             description=f"Use `{prefix}set`  to change settings!\n **__prefix__** : {prefix}"
         )
         embed.set_author(
@@ -71,5 +71,5 @@ class Settings(commands.Cog):
         )
 
 
-def setup(bot):
-    bot.add_cog(Settings(bot))
+async def setup(bot):
+    await bot.add_cog(Settings(bot))

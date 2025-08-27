@@ -1,14 +1,14 @@
 from typing import List, Union, TypeVar, Optional, Callable
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 # Inspired by https://github.com/nextcord/nextcord-ext-menus
 
 T = TypeVar("T")
 
 
-class PaginationView(disnake.ui.View):
+class PaginationView(discord.ui.View):
     FIRST_PAGE = "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\ufe0f"
     PREVIOUS_PAGE = "\N{BLACK LEFT-POINTING TRIANGLE}\ufe0f"
     NEXT_PAGE = "\N{BLACK RIGHT-POINTING TRIANGLE}\ufe0f"
@@ -27,27 +27,27 @@ class PaginationView(disnake.ui.View):
         self._paginator: "DisnakePaginator" = paginator
 
         # Default to disabled, we change them later anyway if actually required.
-        self.first_page_button = disnake.ui.Button(label=self.FIRST_PAGE, disabled=True)
-        self.previous_page_button = disnake.ui.Button(
-            label=self.PREVIOUS_PAGE, disabled=True
-        )
-        self.next_page_button = disnake.ui.Button(label=self.NEXT_PAGE, disabled=True)
-        self.last_page_button = disnake.ui.Button(label=self.LAST_PAGE, disabled=True)
-        self.stop_button = disnake.ui.Button(label=self.STOP, disabled=True)
+        self.first_page_button = discord.ui.Button(label=self.FIRST_PAGE, disabled=True)
+        self.previous_page_button = discord.ui.Button(label=self.PREVIOUS_PAGE, disabled=True)
+        self.next_page_button = discord.ui.Button(label=self.NEXT_PAGE, disabled=True)
+        self.last_page_button = discord.ui.Button(label=self.LAST_PAGE, disabled=True)
+        self.stop_button = discord.ui.Button(label=self.STOP, disabled=True)
 
+        # Wire callbacks to paginator methods
         self.first_page_button.callback = self._paginator.go_to_first_page
         self.previous_page_button.callback = self._paginator.go_to_previous_page
         self.next_page_button.callback = self._paginator.go_to_next_page
         self.last_page_button.callback = self._paginator.go_to_last_page
         self.stop_button.callback = self._paginator.stop_pages
 
+        # Add controls to the view
         self.add_item(self.first_page_button)
         self.add_item(self.previous_page_button)
         self.add_item(self.next_page_button)
         self.add_item(self.last_page_button)
         self.add_item(self.stop_button)
 
-    async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user.id == self.author_id
 
     async def on_timeout(self) -> None:
@@ -107,8 +107,9 @@ class DisnakePaginator:
                 for i in range(0, len(self.__input_data), self._items_per_page)
             ]
 
+        # Runtime state
         self._is_done: bool = False
-        self._message: Optional[disnake.Message] = None
+        self._message: Optional[discord.Message] = None
         self._pagination_view: Optional[PaginationView] = None
 
     @property
@@ -148,8 +149,8 @@ class DisnakePaginator:
     async def start(
         self,
         *,
-        interaction: disnake.Interaction = None,
-        context: commands.Context = None,
+        interaction: Optional[discord.Interaction] = None,
+        context: Optional[commands.Context] = None,
     ):
         """
         Start paginating this paginator.
@@ -162,28 +163,29 @@ class DisnakePaginator:
         context: commands.Context
             The Context to start paginating on.
         """
-        first_page: Union[str, disnake.Embed] = await self.format_page(
+        first_page: Union[str, discord.Embed] = await self.format_page(
             self._paged_data[self._current_page_index], self.current_page
         )
 
         send_kwargs = {}
-        if isinstance(first_page, disnake.Embed):
+        if isinstance(first_page, discord.Embed):
             send_kwargs["embed"] = first_page
         else:
             send_kwargs["content"] = first_page
 
         if interaction:
             self._pagination_view = PaginationView(interaction.user.id, self)
-            if interaction.response._responded:
-                self._message = await interaction.original_message()
-                await self._message.edit(**send_kwargs, view=self._pagination_view)
+            # If already responded, edit the original response; otherwise send one
+            if getattr(interaction.response, "_responded", False):
+                await interaction.edit_original_response(**send_kwargs, view=self._pagination_view)
+                self._message = await interaction.original_response()
             else:
-                await interaction.send(
+                await interaction.response.send_message(
                     **send_kwargs,
                     ephemeral=self._try_ephemeral,
                     view=self._pagination_view,
                 )
-                self._message = await interaction.original_message()
+                self._message = await interaction.original_response()
         elif context:
             self._pagination_view = PaginationView(context.author.id, self)
             self._message = await context.channel.send(
@@ -201,7 +203,7 @@ class DisnakePaginator:
         self._is_done = True
         await self._set_buttons()
 
-    async def _set_buttons(self) -> disnake.Message:
+    async def _set_buttons(self) -> discord.Message:
         """Sets buttons based on current page."""
         if not self.requires_pagination:
             # No pagination required
@@ -254,43 +256,43 @@ class DisnakePaginator:
             Page number is too big for this paginator.
         """
         self.current_page = page_number
-        page: Union[str, disnake.Embed] = await self.format_page(
+        page: Union[str, discord.Embed] = await self.format_page(
             self._paged_data[self._current_page_index], self.current_page
         )
-        if isinstance(page, disnake.Embed):
+        if isinstance(page, discord.Embed):
             await self._message.edit(embed=page)
         else:
             await self._message.edit(content=page)
         await self._set_buttons()
 
-    async def go_to_first_page(self, interaction: disnake.MessageInteraction):
+    async def go_to_first_page(self, interaction: discord.Interaction):
         """Paginate to the first page."""
         await interaction.response.defer()
         await self.show_page(1)
 
-    async def go_to_previous_page(self, interaction: disnake.Interaction):
+    async def go_to_previous_page(self, interaction: discord.Interaction):
         """Paginate to the previous viewable page."""
         await interaction.response.defer()
         await self.show_page(self.current_page - 1)
 
-    async def go_to_next_page(self, interaction: disnake.Interaction):
+    async def go_to_next_page(self, interaction: discord.Interaction):
         """Paginate to the next viewable page."""
         await interaction.response.defer()
         await self.show_page(self.current_page + 1)
 
-    async def go_to_last_page(self, interaction: disnake.Interaction):
+    async def go_to_last_page(self, interaction: discord.Interaction):
         """Paginate to the last viewable page."""
         await interaction.response.defer()
         await self.show_page(self.total_pages)
 
-    async def stop_pages(self, interaction: disnake.Interaction):
+    async def stop_pages(self, interaction: discord.Interaction):
         """Stop paginating this paginator."""
         await interaction.response.defer()
         await self.stop()
 
     async def format_page(
         self, page_items: Union[T, List[T]], page_number: int
-    ) -> Union[str, disnake.Embed]:
+    ) -> Union[str, discord.Embed]:
         """Given the page items, format them how you wish.
 
         Calls the inline formatter if not overridden,

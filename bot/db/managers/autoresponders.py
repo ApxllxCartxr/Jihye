@@ -1,9 +1,10 @@
 from copy import deepcopy
 from functools import wraps
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Tuple
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
+import jinja2.sandbox
 
 from bot.exceptions import TriggerExists, TriggerDoesNotExist
 from bot.db import MongoManager
@@ -222,7 +223,7 @@ class ARManager:
 
     async def format_ar_data(
         self, guild_id: int, trigger: Union[str, int] = None
-    ) -> Union[str, disnake.Embed]:
+    ) -> Tuple[str, Optional[discord.Embed]]:
         """
         Get trigger data and format
 
@@ -255,7 +256,7 @@ class ARManager:
             data = data + embed
             return data, None
 
-        embed = disnake.Embed.from_dict(trigger_data["response"])
+        embed = discord.Embed.from_dict(trigger_data["response"])
         data = data + "**__resp.__** : The response is an embed."
         return data, embed
 
@@ -288,27 +289,46 @@ class ARManager:
             "timestamp": msg.created_at,
         }
 
+        env = jinja2.sandbox.SandboxedEnvironment()
+
         if data["is_embed?"]:
-            embed = disnake.Embed.from_dict(data["response"])
-            embed.title = embed.title.format(**variables)
-            embed.description = embed.description.format(**variables)
+            embed = discord.Embed.from_dict(data["response"])
             try:
-                embed.set_footer(embed.footer.format(**variables))
-            except TypeError:
+                embed.title = env.from_string(embed.title).render(**variables)
+            except (jinja2.TemplateError, TypeError):
+                pass  # Keep original if templating fails
+            try:
+                embed.description = env.from_string(embed.description).render(**variables)
+            except (jinja2.TemplateError, TypeError):
                 pass
             try:
-                embed.set_author(embed.author.format(**variables))
-            except TypeError:
+                if embed.footer:
+                    embed.set_footer(text=env.from_string(embed.footer.text).render(**variables))
+            except (jinja2.TemplateError, TypeError):
+                pass
+            try:
+                if embed.author:
+                    embed.set_author(name=env.from_string(embed.author.name).render(**variables))
+            except (jinja2.TemplateError, TypeError):
                 pass
 
             for field in embed.fields:
-                field["name"] = field["name"].format(**variables)
-                field["value"] = field["value"].format(**variables)
+                try:
+                    field["name"] = env.from_string(field["name"]).render(**variables)
+                except (jinja2.TemplateError, TypeError):
+                    pass
+                try:
+                    field["value"] = env.from_string(field["value"]).render(**variables)
+                except (jinja2.TemplateError, TypeError):
+                    pass
 
             await msg.channel.send(embed=embed)
             return
 
-        msg_data = data["response"].format(**variables)
+        try:
+            msg_data = env.from_string(data["response"]).render(**variables)
+        except (jinja2.TemplateError, TypeError):
+            msg_data = data["response"]  # Fallback to original
         await msg.channel.send(msg_data)
 
     def make_ordinal(self, n):

@@ -2,7 +2,7 @@ from bot.db import MongoManager
 from copy import deepcopy
 from pprint import pprint
 from bot.exceptions import TaskExists, TaskDoesNotExist
-from disnake.ext.commands import Paginator
+from discord.ext.commands import Paginator
 import datetime
 
 

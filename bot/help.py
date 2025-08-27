@@ -1,5 +1,6 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
+import contextlib
 
 
 class MyHelp(commands.HelpCommand):
@@ -19,7 +20,7 @@ class MyHelp(commands.HelpCommand):
 
     async def send_bot_help(self, mapping):
         ctx = self.context
-        em = disnake.Embed(
+        em = discord.Embed(
             title=f"{ctx.me.display_name} Help Menu",
             timestamp=ctx.message.created_at,
             color=0x2F3136,
@@ -42,7 +43,7 @@ class MyHelp(commands.HelpCommand):
 
     async def send_command_help(self, command):
         signature = self.get_command_signature(command)
-        embed = disnake.Embed(
+        embed = discord.Embed(
             title=signature,
             description=command.help or "No help found...",
             color=0x2F3136,
@@ -69,7 +70,7 @@ class MyHelp(commands.HelpCommand):
         await self.send(embed=embed)
 
     async def send_help_embed(self, title, description, commands):
-        embed = disnake.Embed(
+        embed = discord.Embed(
             title=title, description=description or "No help found...", color=0x2F3136
         )
 
@@ -81,7 +82,7 @@ class MyHelp(commands.HelpCommand):
                     inline=False,
                 )
         if not filtered_commands:
-            await self.send("You don't have the required permissions for viewing this.")
+            await self.send(content="You don't have the required permissions for viewing this.")
 
         await self.send(embed=embed)
 
@@ -91,7 +92,7 @@ class MyHelp(commands.HelpCommand):
 
     async def send_cog_help(self, cog):
         title = cog.qualified_name or "No"
-        em = disnake.Embed(
+        em = discord.Embed(
             title=f"{title} Category",
             description=f"{cog.description}\n\n"
             + "\n".join([f" `{x.name}` • {x.help}" for x in cog.get_commands()]),
