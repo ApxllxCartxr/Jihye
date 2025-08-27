@@ -1,7 +1,7 @@
 # Jihye
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Framework: disnake](https://img.shields.io/badge/Framework-disnake-7289DA.svg)](https://github.com/DisnakeDev/disnake)
+[![Framework: discord.py](https://img.shields.io/badge/Framework-discord.py-7289DA.svg)](https://github.com/Rapptz/discord.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A modern, minimal Discord bot built with disnake — focused on reliability and ease-of-use for large servers (1k+ members).
